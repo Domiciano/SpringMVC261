@@ -1,4 +1,4 @@
-package edu.co.icesi.introspringboot;
+package edu.co.icesi.introspringboot.unit;
 
 import edu.co.icesi.introspringboot.entity.Course;
 import edu.co.icesi.introspringboot.entity.Professor;
