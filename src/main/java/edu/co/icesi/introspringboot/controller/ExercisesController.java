@@ -5,10 +5,12 @@ import edu.co.icesi.introspringboot.repository.CourseRepository;
 import edu.co.icesi.introspringboot.repository.PermissionRepository;
 import edu.co.icesi.introspringboot.repository.ProfessorRepository;
 import edu.co.icesi.introspringboot.repository.StudentRepository;
+import edu.co.icesi.introspringboot.services.CourseService;
 import edu.co.icesi.introspringboot.services.EnrollmentService;
 import edu.co.icesi.introspringboot.services.ProfessorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -35,6 +37,20 @@ public class ExercisesController {
 
     @Autowired
     private ProfessorService professorService;
+
+    @Autowired
+    private CourseService courseService;
+
+    //http://localhost:8080/icesi/program/23/student/A00234534534
+
+    // http://localhost:8080/courses/page?credits=3&page=0&quantity=5
+    @GetMapping("/courses/page")
+    public List<Course> getCoursesByCredits(@RequestParam int credits,
+                                            @RequestParam int page,
+                                            @RequestParam int quantity) {
+        return courseService.getCoursesByCredits(credits, page, quantity);
+    }
+
 
     //http://localhost:8080/example1
     @GetMapping("/exercise1")
