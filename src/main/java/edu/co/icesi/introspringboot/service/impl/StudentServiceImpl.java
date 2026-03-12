@@ -31,10 +31,10 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public Student findStudentByCode(String code) {
         if (code == null || code.isBlank()) {
-            throw new IllegalArgumentException("El c\u00f3digo no puede ser nulo o vac\u00edo");
+            throw new IllegalArgumentException("El código no puede ser nulo o vacío");
         }
         return studentRepository.findByCode(code)
-                .orElseThrow(() -> new RuntimeException("Estudiante no encontrado con c\u00f3digo: " + code));
+                .orElseThrow(() -> new RuntimeException("Estudiante no encontrado con código: " + code));
     }
 
     @Override
@@ -50,7 +50,7 @@ public class StudentServiceImpl implements StudentService {
     @Transactional
     public void deleteStudentByCode(String code) {
         Student student = studentRepository.findByCode(code)
-                .orElseThrow(() -> new RuntimeException("Estudiante no encontrado con c\u00f3digo: " + code));
+                .orElseThrow(() -> new RuntimeException("Estudiante no encontrado con código: " + code));
         studentRepository.delete(student);
     }
 
@@ -67,7 +67,7 @@ public class StudentServiceImpl implements StudentService {
         Course course = courses.get(0);
 
         if (enrollmentRepository.existsByStudentAndCourse(student, course)) {
-            throw new RuntimeException("El estudiante ya est\u00e1 inscrito en este curso");
+            throw new RuntimeException("El estudiante ya está inscrito en este curso");
         }
 
         StudentCourseId id = new StudentCourseId();
@@ -95,7 +95,7 @@ public class StudentServiceImpl implements StudentService {
         Course course = courses.get(0);
 
         Enrollment enrollment = enrollmentRepository.findByStudentAndCourse(student, course)
-                .orElseThrow(() -> new RuntimeException("El estudiante no est\u00e1 inscrito en este curso"));
+                .orElseThrow(() -> new RuntimeException("El estudiante no está inscrito en este curso"));
 
         enrollmentRepository.delete(enrollment);
     }
