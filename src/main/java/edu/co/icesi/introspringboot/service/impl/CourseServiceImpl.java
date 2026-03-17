@@ -7,8 +7,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -28,12 +28,20 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<Course> getAllCourses() {
-        return courseRepository.findAll();
+        List<Course> result = new ArrayList<>();
+        courseRepository.findAll().forEach(result::add);
+        return result;
     }
 
     @Override
     public Course getCourseById(Integer id) {
         return courseRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Curso no encontrado con id: " + id));
+    }
+
+    @Override
+    public List<Course> getCoursesByCredits(int credits, int page, int quantity) {
+        Pageable pageable = PageRequest.of(page, quantity);
+        return courseRepository.findByCreditsEquals(credits, pageable);
     }
 }

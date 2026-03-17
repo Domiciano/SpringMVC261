@@ -1,8 +1,10 @@
 package edu.co.icesi.introspringboot.service;
 
+import edu.co.icesi.introspringboot.entity.Enrollment;
+
 public interface EnrollmentService {
 
-    void enroll(Integer studentId, Integer courseId);
+    Enrollment enroll(Integer courseId, Integer studentId);
 
     void enrollWithFailure(Integer studentId, Integer courseId);
 

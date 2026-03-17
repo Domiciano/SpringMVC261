@@ -33,7 +33,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Transactional
-    public void enroll(Integer studentId, Integer courseId) {
+    @Override
+    public Enrollment enroll(Integer courseId, Integer studentId) {
         Student student = studentRepository.findById(studentId).orElseThrow();
         Course course = courseRepository.findById(courseId).orElseThrow();
 
@@ -46,10 +47,11 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         enrollment.setStudent(student);
         enrollment.setCourse(course);
 
-        enrollmentRepository.save(enrollment);
+        return enrollmentRepository.save(enrollment);
     }
 
     @Transactional
+    @Override
     public void enrollWithFailure(Integer studentId, Integer courseId) {
         Student student = studentRepository.findById(studentId).orElseThrow();
         Course course = courseRepository.findById(courseId).orElseThrow();
@@ -69,6 +71,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     }
 
     @Transactional
+    @Override
     public void createCourseWithNewProfessor(String courseName) {
         Professor professor = new Professor();
         professor.setName("Profesor Transitorio");

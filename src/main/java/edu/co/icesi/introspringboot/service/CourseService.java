@@ -14,4 +14,6 @@ public interface CourseService {
     List<Course> getAllCourses();
 
     Course getCourseById(Integer id);
+
+    List<Course> getCoursesByCredits(int credits, int page, int quantity);
 }

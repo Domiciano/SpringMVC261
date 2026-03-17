@@ -15,5 +15,5 @@ public interface StudentRepository extends JpaRepository<Student, Integer> {
     List<Student> findByProgram(String program);
 
     // Lesson 17: Find students enrolled in a course by course name
-    List<Student> findByEnrollments_Course_Name(String courseName);
+    List<Student> findByStudentCourses_Course_Name(String courseName);
 }

@@ -34,52 +34,43 @@ public class StudentServiceImpl implements StudentService {
             throw new IllegalArgumentException("El código no puede ser nulo o vacío");
         }
         return studentRepository.findByCode(code)
-                 .orElseThrow(() -> new RuntimeException("Estudiante no encontrado con código: " + code));
+                .orElseThrow(() -> new RuntimeException("Estudiante no encontrado: " + code));
     }
 
     @Override
     public List<Student> getStudentsByCourseName(String courseName) {
-        List<Course> courses = courseRepository.findByName(courseName);
-        if (courses.isEmpty()) {
+        if (!courseRepository.existsByName(courseName)) {
             throw new RuntimeException("Curso no encontrado: " + courseName);
         }
-        return studentRepository.findByEnrollments_Course_Name(courseName);
+        return studentRepository.findByStudentCourses_Course_Name(courseName);
     }
 
     @Override
     @Transactional
     public void deleteStudentByCode(String code) {
         Student student = studentRepository.findByCode(code)
-                .orElseThrow(() -> new RuntimeException("Estudiante no encontrado con código: " + code));
+                .orElseThrow(() -> new RuntimeException("Estudiante no encontrado: " + code));
         studentRepository.delete(student);
     }
 
     @Override
     @Transactional
-    public void enrollStudentInCourse(String studentCode, String courseName) {
+    public Enrollment enrollStudentInCourse(String studentCode, String courseName) {
         Student student = studentRepository.findByCode(studentCode)
                 .orElseThrow(() -> new RuntimeException("Estudiante no encontrado: " + studentCode));
-
-        List<Course> courses = courseRepository.findByName(courseName);
-        if (courses.isEmpty()) {
-            throw new RuntimeException("Curso no encontrado: " + courseName);
-        }
-        Course course = courses.get(0);
-
+        Course course = courseRepository.findByName(courseName)
+                .orElseThrow(() -> new RuntimeException("Curso no encontrado: " + courseName));
         if (enrollmentRepository.existsByStudentAndCourse(student, course)) {
-            throw new RuntimeException("El estudiante ya está inscrito en este curso");
+            throw new IllegalStateException("El estudiante ya está inscrito en este curso");
         }
-
         StudentCourseId id = new StudentCourseId();
         id.setStudentId(student.getId());
         id.setCourseId(course.getId());
-
         Enrollment enrollment = new Enrollment();
         enrollment.setId(id);
         enrollment.setStudent(student);
         enrollment.setCourse(course);
-
-        enrollmentRepository.save(enrollment);
+        return enrollmentRepository.save(enrollment);
     }
 
     @Override
@@ -87,16 +78,10 @@ public class StudentServiceImpl implements StudentService {
     public void unenrollStudentFromCourse(String studentCode, String courseName) {
         Student student = studentRepository.findByCode(studentCode)
                 .orElseThrow(() -> new RuntimeException("Estudiante no encontrado: " + studentCode));
-
-        List<Course> courses = courseRepository.findByName(courseName);
-        if (courses.isEmpty()) {
-            throw new RuntimeException("Curso no encontrado: " + courseName);
-        }
-        Course course = courses.get(0);
-
+        Course course = courseRepository.findByName(courseName)
+                .orElseThrow(() -> new RuntimeException("Curso no encontrado: " + courseName));
         Enrollment enrollment = enrollmentRepository.findByStudentAndCourse(student, course)
                 .orElseThrow(() -> new RuntimeException("El estudiante no está inscrito en este curso"));
-
         enrollmentRepository.delete(enrollment);
     }
 }

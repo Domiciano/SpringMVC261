@@ -8,9 +8,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CourseRepository extends CrudRepository<Course, Integer> {
-    List<Course> findByName(String name);
+    Optional<Course> findByName(String name);
+
+    boolean existsByName(String name);
 
     List<Course> findByProfessor_NameOrderByName(String name);
+
+    Page<Course> findByProfessor_Name(String name, Pageable pageable);
 
     List<Course> findByCreditsEquals(int credits, Pageable pageable);
     //List, o Page

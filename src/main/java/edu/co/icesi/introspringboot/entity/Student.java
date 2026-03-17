@@ -20,7 +20,7 @@ public class Student {
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private List<Enrollment> enrollments;
+    private List<Enrollment> studentCourses;
 
     public Student() {}
 
@@ -32,6 +32,6 @@ public class Student {
     public void setCode(String code) { this.code = code; }
     public String getProgram() { return program; }
     public void setProgram(String program) { this.program = program; }
-    public List<Enrollment> getEnrollments() { return enrollments; }
-    public void setEnrollments(List<Enrollment> enrollments) { this.enrollments = enrollments; }
+    public List<Enrollment> getStudentCourses() { return studentCourses; }
+    public void setStudentCourses(List<Enrollment> studentCourses) { this.studentCourses = studentCourses; }
 }
