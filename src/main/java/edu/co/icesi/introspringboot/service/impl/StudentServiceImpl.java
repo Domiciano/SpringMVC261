@@ -34,7 +34,7 @@ public class StudentServiceImpl implements StudentService {
             throw new IllegalArgumentException("El código no puede ser nulo o vacío");
         }
         return studentRepository.findByCode(code)
-                .orElseThrow(() -> new RuntimeException("Estudiante no encontrado con código: " + code));
+                 .orElseThrow(() -> new RuntimeException("Estudiante no encontrado con código: " + code));
     }
 
     @Override
