@@ -11,7 +11,9 @@ import edu.co.icesi.introspringboot.service.StudentService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -83,5 +85,27 @@ public class StudentServiceImpl implements StudentService {
         Enrollment enrollment = enrollmentRepository.findByStudentAndCourse(student, course)
                 .orElseThrow(() -> new RuntimeException("El estudiante no está inscrito en este curso"));
         enrollmentRepository.delete(enrollment);
+    }
+
+    @Override
+    public Student save(Student student) {
+        return studentRepository.save(student);
+    }
+
+    @Override
+    public List<Student> findAll() {
+        List<Student> result = new ArrayList<>();
+        studentRepository.findAll().forEach(result::add);
+        return result;
+    }
+
+    @Override
+    public Optional<Student> findById(Integer id) {
+        return studentRepository.findById(id);
+    }
+
+    @Override
+    public void deleteById(Integer id) {
+        studentRepository.deleteById(id);
     }
 }

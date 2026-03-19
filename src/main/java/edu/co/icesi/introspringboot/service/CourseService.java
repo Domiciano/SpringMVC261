@@ -16,4 +16,8 @@ public interface CourseService {
     Course getCourseById(Integer id);
 
     List<Course> getCoursesByCredits(int credits, int page, int quantity);
+
+    Course save(Course course);
+
+    void deleteById(Integer id);
 }

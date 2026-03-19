@@ -44,4 +44,14 @@ public class CourseServiceImpl implements CourseService {
         Pageable pageable = PageRequest.of(page, quantity);
         return courseRepository.findByCreditsEquals(credits, pageable);
     }
+
+    @Override
+    public Course save(Course course) {
+        return courseRepository.save(course);
+    }
+
+    @Override
+    public void deleteById(Integer id) {
+        courseRepository.deleteById(id);
+    }
 }

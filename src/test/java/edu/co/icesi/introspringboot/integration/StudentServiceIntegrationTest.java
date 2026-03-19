@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -45,7 +46,6 @@ public class StudentServiceIntegrationTest {
 
     @BeforeEach
     public void setup() {
-        // Estudiante de prueba
         studentTest001 = new Student();
         studentTest001.setName("John Doe");
         studentTest001.setCode("TEST001");
@@ -63,8 +63,15 @@ public class StudentServiceIntegrationTest {
         courseRepository.save(courseTest001);
     }
 
+    @AfterEach
+    public void cleanup() {
+        enrollmentRepository.deleteAll();
+        studentRepository.deleteAll();
+        courseRepository.deleteAll();
+        professorRepository.deleteAll();
+    }
 
-
+    // --- findStudentByCode ---
 
     @Test
     public void findStudentByCode_WhenCodeIsValid_ShouldReturnStudent() {
@@ -75,7 +82,7 @@ public class StudentServiceIntegrationTest {
     }
 
     @Test
-    public void findStudentByCode_WhenCodeDoesNotExist_ShouldThrowRuntimeException(){
+    public void findStudentByCode_WhenCodeDoesNotExist_ShouldThrowRuntimeException() {
         assertThrows(
                 RuntimeException.class,
                 () -> studentService.findStudentByCode("TESTXX1")
@@ -83,16 +90,18 @@ public class StudentServiceIntegrationTest {
     }
 
     @Test
-    public void findStudentByCode_WhenCodeIsNull_ShouldThrowIllegalArgumentException(){
+    public void findStudentByCode_WhenCodeIsNull_ShouldThrowIllegalArgumentException() {
         assertThrows(
                 IllegalArgumentException.class,
                 () -> studentService.findStudentByCode(null)
         );
     }
 
+    // --- getStudentsByCourseName ---
+
     @Test
     void getStudentsByCourseName_WhenCourseExists_ShouldReturnEnrolledStudents() {
-        //ARRANGE
+        // ARRANGE
         StudentCourseId id = new StudentCourseId();
         id.setStudentId(studentTest001.getId());
         id.setCourseId(courseTest001.getId());
@@ -102,28 +111,160 @@ public class StudentServiceIntegrationTest {
         enrollment.setCourse(courseTest001);
         enrollmentRepository.save(enrollment);
 
-        //ACT
+        // ACT
         List<Student> students = studentService.getStudentsByCourseName("Test Course");
 
-        //ASSERT
+        // ASSERT
         assertFalse(students.isEmpty());
         assertEquals(1, students.size());
     }
 
     @Test
-    public void getStudentsByCourseName_WhenCourseHasNoStudents_ShouldReturnEmptyList(){
-        //ACT
+    public void getStudentsByCourseName_WhenCourseHasNoStudents_ShouldReturnEmptyList() {
+        // ACT
         List<Student> students = studentService.getStudentsByCourseName("Test Course");
-        //ASSERT
+        // ASSERT
         assertTrue(students.isEmpty());
     }
 
-    @AfterEach
-    public void cleanup(){
-        studentRepository.deleteAll();
-        courseRepository.deleteAll();
-        professorRepository.deleteAll();
+    // --- deleteStudentByCode ---
+
+    @Test
+    void deleteStudentByCode_WhenStudentExists_ShouldRemoveFromDb() {
+        // ACT
+        studentService.deleteStudentByCode("TEST001");
+
+        // ASSERT
+        assertFalse(studentRepository.findByCode("TEST001").isPresent());
     }
 
+    @Test
+    void deleteStudentByCode_WhenStudentNotFound_ShouldThrowRuntimeException() {
+        assertThrows(RuntimeException.class,
+                () -> studentService.deleteStudentByCode("NOTEXIST"));
+    }
 
+    // --- enrollStudentInCourse ---
+
+    @Test
+    void enrollStudentInCourse_WhenValidStudentAndCourse_ShouldCreateEnrollment() {
+        // ACT
+        Enrollment enrollment = studentService.enrollStudentInCourse("TEST001", "Test Course");
+
+        // ASSERT
+        assertNotNull(enrollment);
+        assertEquals(studentTest001.getId(), enrollment.getId().getStudentId());
+        assertEquals(courseTest001.getId(), enrollment.getId().getCourseId());
+    }
+
+    @Test
+    void enrollStudentInCourse_WhenStudentNotFound_ShouldThrowRuntimeException() {
+        assertThrows(RuntimeException.class,
+                () -> studentService.enrollStudentInCourse("NOTEXIST", "Test Course"));
+    }
+
+    @Test
+    void enrollStudentInCourse_WhenAlreadyEnrolled_ShouldThrowIllegalStateException() {
+        // ARRANGE - enroll once
+        studentService.enrollStudentInCourse("TEST001", "Test Course");
+
+        // ACT & ASSERT - enroll again
+        assertThrows(IllegalStateException.class,
+                () -> studentService.enrollStudentInCourse("TEST001", "Test Course"));
+    }
+
+    // --- unenrollStudentFromCourse ---
+
+    @Test
+    void unenrollStudentFromCourse_WhenEnrolled_ShouldDeleteEnrollment() {
+        // ARRANGE
+        studentService.enrollStudentInCourse("TEST001", "Test Course");
+
+        // ACT
+        studentService.unenrollStudentFromCourse("TEST001", "Test Course");
+
+        // ASSERT
+        assertEquals(0, enrollmentRepository.count());
+    }
+
+    @Test
+    void unenrollStudentFromCourse_WhenNotEnrolled_ShouldThrowRuntimeException() {
+        assertThrows(RuntimeException.class,
+                () -> studentService.unenrollStudentFromCourse("TEST001", "Test Course"));
+    }
+
+    // --- save ---
+
+    @Test
+    void save_WhenValidStudent_ShouldReturnPersistedStudent() {
+        // ARRANGE
+        Student newStudent = new Student();
+        newStudent.setName("Jane Doe");
+        newStudent.setCode("TEST002");
+        newStudent.setProgram("SIS");
+
+        // ACT
+        Student saved = studentService.save(newStudent);
+
+        // ASSERT
+        assertNotNull(saved.getId());
+        assertTrue(studentRepository.findById(saved.getId()).isPresent());
+    }
+
+    // --- findAll ---
+
+    @Test
+    void findAll_WhenStudentsExist_ShouldReturnAll() {
+        // ACT
+        List<Student> result = studentService.findAll();
+
+        // ASSERT
+        assertFalse(result.isEmpty());
+        assertTrue(result.size() >= 1);
+    }
+
+    @Test
+    void findAll_WhenNoStudents_ShouldReturnEmptyList() {
+        // ARRANGE
+        enrollmentRepository.deleteAll();
+        studentRepository.deleteAll();
+
+        // ACT
+        List<Student> result = studentService.findAll();
+
+        // ASSERT
+        assertTrue(result.isEmpty());
+    }
+
+    // --- findById ---
+
+    @Test
+    void findById_WhenExists_ShouldReturnStudent() {
+        // ACT
+        Optional<Student> result = studentService.findById(studentTest001.getId());
+
+        // ASSERT
+        assertTrue(result.isPresent());
+        assertEquals("TEST001", result.get().getCode());
+    }
+
+    @Test
+    void findById_WhenNotExists_ShouldReturnEmptyOptional() {
+        // ACT
+        Optional<Student> result = studentService.findById(99999);
+
+        // ASSERT
+        assertTrue(result.isEmpty());
+    }
+
+    // --- deleteById ---
+
+    @Test
+    void deleteById_WhenExists_ShouldRemoveStudent() {
+        // ACT
+        studentService.deleteById(studentTest001.getId());
+
+        // ASSERT
+        assertTrue(studentService.findById(studentTest001.getId()).isEmpty());
+    }
 }

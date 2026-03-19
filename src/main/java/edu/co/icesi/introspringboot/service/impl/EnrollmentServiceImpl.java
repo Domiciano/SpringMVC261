@@ -13,6 +13,10 @@ import edu.co.icesi.introspringboot.service.EnrollmentService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @Transactional(readOnly = true)
 public class EnrollmentServiceImpl implements EnrollmentService {
@@ -75,11 +79,36 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public void createCourseWithNewProfessor(String courseName) {
         Professor professor = new Professor();
         professor.setName("Profesor Transitorio");
+        professorRepository.save(professor);
 
         Course course = new Course();
         course.setName(courseName);
         course.setProfessor(professor);
 
         courseRepository.save(course);
+    }
+
+    @Transactional
+    @Override
+    public Enrollment save(Enrollment enrollment) {
+        return enrollmentRepository.save(enrollment);
+    }
+
+    @Override
+    public List<Enrollment> findAll() {
+        List<Enrollment> result = new ArrayList<>();
+        enrollmentRepository.findAll().forEach(result::add);
+        return result;
+    }
+
+    @Override
+    public Optional<Enrollment> findById(StudentCourseId id) {
+        return enrollmentRepository.findById(id);
+    }
+
+    @Transactional
+    @Override
+    public void deleteById(StudentCourseId id) {
+        enrollmentRepository.deleteById(id);
     }
 }
