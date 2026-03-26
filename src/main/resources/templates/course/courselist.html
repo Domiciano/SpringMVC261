@@ -8,10 +8,34 @@
     <title>Document</title>
 </head>
 <body>
+
+    <h1>Crear curso</h1>
+    <form method="post"
+          th:action="@{/course/save}"
+          th:object="${newcourse}"
+    >
+        <input
+                type="text"
+                placeholder="Nombre"
+                th:field="*{name}">
+        <br>
+        <input type="number"
+               placeholder="Créditos"
+                th:field="*{credits}">
+        <br>
+        <select th:field="*{professor}">
+            <option th:each="professor : ${professors}"
+                    th:value="${professor.id}"
+                    th:text="${professor.name}">
+            </option>
+        </select>
+        <button>Crear</button>
+    </form>
+
     <h1>Lista de cursos</h1>
     <ol>
         <li th:each="course :${courses}">
-            <span th:text="${course.name}"></span><br>
+            <a th:href="@{/course/{id}(id=${course.id})}"><span th:text="${course.name}"></span></a><br>
             <span th:text="${course.professor.name}"></span><br>
         </li>
     </ol>

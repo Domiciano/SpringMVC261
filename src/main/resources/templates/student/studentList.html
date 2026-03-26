@@ -12,11 +12,18 @@
    <form th:action="@{/student/save}"
          method="post"
          th:object="${newstudent}">
-       <input type="text" th:field="*{name}">
-       <input type="text" th:field="*{program}">
-       <input type="text" th:field="*{code}">
+       <input type="text" th:field="*{name}" placeholder="Nombre"><br>
+       <input type="text" th:field="*{program}" placeholder="Programa"><br>
+       <input type="text" th:field="*{code}" placeholder="Código"><br>
        <button>Save</button>
    </form>
+
+    <ol>
+        <li th:each="student :${students}">
+            <span th:text="${student.name}"></span><br>
+            <span th:text="${student.code}"></span><br>
+        </li>
+    </ol>
 
 </body>
 </html>

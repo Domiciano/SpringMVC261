@@ -47,6 +47,7 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public Course save(Course course) {
+        //Validaciones
         return courseRepository.save(course);
     }
 
