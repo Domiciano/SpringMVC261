@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+<form th:action="@{/auth/login}" method="post">
+    <input type="text" id="username" name="username" required>
+    <input type="password" id="password" name="password" required>
+    <button type="submit">Ingresar</button>
+
+    <div th:if="${param.error}">
+        <p style="color: red;">Usuario o contraseña incorrectos</p>
+    </div>
+
+    <div th:if="${param.logout}">
+        <p style="color: green;">Has cerrado sesión correctamente</p>
+    </div>
+</form>
+
+</body>
+</html>
