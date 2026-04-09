@@ -1,3 +1,10 @@
+
+
+INSERT INTO app_user (username, password) VALUES ('luisdiaz@gmail.com','$2a$12$LE5wWF2zJKLfE98E4KgJPO.buVfS0xHlSg2F2ciQMnk5kdgEBx506');
+INSERT INTO app_user (username, password) VALUES ('domic.rincon@gmail.com','$2a$12$LE5wWF2zJKLfE98E4KgJPO.buVfS0xHlSg2F2ciQMnk5kdgEBx506');
+
+
+
 -- Profesores
 INSERT INTO professor (name) VALUES ('Juan Perez');
 INSERT INTO professor (name) VALUES ('Maria Rodriguez');
