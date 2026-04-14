@@ -1,9 +1,13 @@
-
-
 INSERT INTO app_user (username, password) VALUES ('luisdiaz@gmail.com','$2a$12$LE5wWF2zJKLfE98E4KgJPO.buVfS0xHlSg2F2ciQMnk5kdgEBx506');
 INSERT INTO app_user (username, password) VALUES ('domic.rincon@gmail.com','$2a$12$LE5wWF2zJKLfE98E4KgJPO.buVfS0xHlSg2F2ciQMnk5kdgEBx506');
 
+-- ─── ROLES ───────────────────────────────────────────────────────────────────
+INSERT INTO role (name) VALUES ('ROLE_ADMIN');    -- 1
+INSERT INTO role (name) VALUES ('ROLE_STUDENT'); -- 2
 
+-- ─── ASIGNACIÓN DE ROLES ─────────────────────────────────────────────────────
+INSERT INTO user_role (user_id, role_id) VALUES (1, 1); -- carlos  → ADMIN
+INSERT INTO user_role (user_id, role_id) VALUES (2, 2); -- maria   → ADMIN
 
 -- Profesores
 INSERT INTO professor (name) VALUES ('Juan Perez');
@@ -54,9 +58,7 @@ INSERT INTO permission (name) VALUES ('READ_COURSE');       -- 14
 INSERT INTO permission (name) VALUES ('UPDATE_COURSE');     -- 15
 INSERT INTO permission (name) VALUES ('DELETE_COURSE');     -- 16
 
--- ─── ROLES ───────────────────────────────────────────────────────────────────
-INSERT INTO role (name) VALUES ('ADMIN');    -- 1
-INSERT INTO role (name) VALUES ('DIRECTOR'); -- 2
+
 
 -- ─── ADMIN: todos los permisos (1 – 16) ──────────────────────────────────────
 INSERT INTO role_permission (role_id, permission_id) VALUES (1, 1);
@@ -93,13 +95,6 @@ INSERT INTO app_user (username, password) VALUES ('maria',   '{noop}admin123'); 
 INSERT INTO app_user (username, password) VALUES ('ana',     '{noop}dir123');      -- 3
 INSERT INTO app_user (username, password) VALUES ('juan',    '{noop}dir123');      -- 4
 INSERT INTO app_user (username, password) VALUES ('sofia',   '{noop}dir123');      -- 5
-
--- ─── ASIGNACIÓN DE ROLES ─────────────────────────────────────────────────────
-INSERT INTO user_role (user_id, role_id) VALUES (1, 1); -- carlos  → ADMIN
-INSERT INTO user_role (user_id, role_id) VALUES (2, 1); -- maria   → ADMIN
-INSERT INTO user_role (user_id, role_id) VALUES (3, 2); -- ana     → DIRECTOR
-INSERT INTO user_role (user_id, role_id) VALUES (4, 2); -- juan    → DIRECTOR
-INSERT INTO user_role (user_id, role_id) VALUES (5, 2); -- sofia   → DIRECTOR
 
 
 -- 10 Profesores

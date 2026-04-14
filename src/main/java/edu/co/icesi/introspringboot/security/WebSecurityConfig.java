@@ -4,6 +4,7 @@ package edu.co.icesi.introspringboot.security;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -19,6 +20,7 @@ import static org.springframework.boot.autoconfigure.security.servlet.PathReques
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class WebSecurityConfig {
 
     //1. Manager de users
@@ -61,7 +63,13 @@ public class WebSecurityConfig {
                                 .anyRequest().authenticated()
                 ).formLogin(login -> login
                         .loginPage("/auth/login")
-                        .defaultSuccessUrl("/home", true)
+                        .defaultSuccessUrl("/auth/profile", true)
+                        .permitAll()
+                ).logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/auth/login?logout")
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
                         .permitAll()
                 );
         return http.build();

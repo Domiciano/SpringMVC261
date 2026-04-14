@@ -8,6 +8,7 @@ import edu.co.icesi.introspringboot.repository.CourseRepository;
 import edu.co.icesi.introspringboot.repository.EnrollmentRepository;
 import edu.co.icesi.introspringboot.repository.StudentRepository;
 import edu.co.icesi.introspringboot.service.StudentService;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +32,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('VIEW_STUDENT','VIEW_OWN_STUDENT')")
     public Student findStudentByCode(String code) {
         if (code == null || code.isBlank()) {
             throw new IllegalArgumentException("El código no puede ser nulo o vacío");
@@ -40,6 +42,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
+    @PreAuthorize("hasAnyAuthority('VIEW_COURSE_STUDENTS')")
     public List<Student> getStudentsByCourseName(String courseName) {
         if (!courseRepository.existsByName(courseName)) {
             throw new RuntimeException("Curso no encontrado: " + courseName);
@@ -49,6 +52,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasAnyAuthority('DELETE_STUDENT')")
     public void deleteStudentByCode(String code) {
         Student student = studentRepository.findByCode(code)
                 .orElseThrow(() -> new RuntimeException("Estudiante no encontrado: " + code));
@@ -57,6 +61,7 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     @Transactional
+    @PreAuthorize("hasAnyAuthority('ENROLL_STUDENT')")
     public Enrollment enrollStudentInCourse(String studentCode, String courseName) {
         Student student = studentRepository.findByCode(studentCode)
                 .orElseThrow(() -> new RuntimeException("Estudiante no encontrado: " + studentCode));

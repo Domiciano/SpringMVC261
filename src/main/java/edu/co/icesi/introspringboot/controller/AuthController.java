@@ -2,8 +2,10 @@ package edu.co.icesi.introspringboot.controller;
 
 
 import edu.co.icesi.introspringboot.entity.User;
+import edu.co.icesi.introspringboot.security.AppUser;
 import edu.co.icesi.introspringboot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,6 +38,14 @@ public class AuthController {
         return "redirect:/auth/login";
     }
 
+    //My Profile
+    @GetMapping("/profile")
+    public String profile(Model model, Authentication authentication) {
+        AppUser user = (AppUser) authentication.getPrincipal();
+        model.addAttribute("user", user.getUsername());
+        model.addAttribute("auths", user.getAuthorities());
+        return "auth/profile";
+    }
 
 
 }

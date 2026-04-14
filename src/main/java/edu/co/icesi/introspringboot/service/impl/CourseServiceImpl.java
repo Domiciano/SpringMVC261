@@ -6,6 +6,7 @@ import edu.co.icesi.introspringboot.service.CourseService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public List<Course> getAllCourses() {
         List<Course> result = new ArrayList<>();
         courseRepository.findAll().forEach(result::add);
